@@ -9,6 +9,8 @@ This is the completed challenges from lessons named [js-hard-parts](https://fron
 
 1. Callbacks and High-Order Functions contains the problems and solutions:https://github.com/recoveryMonster/learnDemo/blob/master/js/csbin/callback.js. the tasks from:http://csbin.io/callbacks
 2.  Closures, Scope, and ExecutionContext contains the problems and solutions:https://github.com/recoveryMonster/learnDemo/blob/master/js/csbin/closure.js. the tasks from:http://csbin.io/closures
+3. Async contains the problems and solutions: https://github.com/recoveryMonster/learnDemo/blob/master/js/csbin/async.js. the tasks from:http://csbin.io/async
+4. OOP contains the problems and solutions: https://github.com/recoveryMonster/learnDemo/blob/master/js/csbin/oop.js. the tasks from:http://csbin.io/oop
 
 ### deepInJs
 
