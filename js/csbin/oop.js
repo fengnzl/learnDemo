@@ -170,16 +170,21 @@ PersonConstructor.prototype.introduce = function intro() {
 ****************************************************************/
 
 /*** CHALLENGE 1 of 3 ***/
-
+/*
+ Create a class PersonClass. PersonClass should have a constructor 
+ that is passed an input of name and saves it to a property by the same name.
+PersonClass should also have a method called greet that logs the string 'hello'.
+ */
 class PersonClass {
-	constructor() {
+	constructor(name) {
     // add code here
-
-
+    this.name = name;
 	}
 
 	// add code here
-
+  greet() {
+    console.log('hello')
+  }
 }
 
 
@@ -190,9 +195,18 @@ const george = new PersonClass;
 
 
 /*** CHALLENGE 2 of 3 ***/
-
+/*
+Create a class DeveloperClass that creates objects by extending
+ the PersonClass class. In addition to having a name property and 
+ greet method, DeveloperClass should have an introduce method. 
+ When called, introduce should log the string 'Hello World, my name is [name]'.
+ */
 // add code here
-
+class DeveloperClass extends PersonClass{
+  introduce() {
+    console.log(`Hello World, my name is ${this.name}`)
+  }
+}
 
 // /********* Uncomment these lines to test your work! *********/
 // const thai = new DeveloperClass('Thai', 32);
@@ -218,14 +232,54 @@ function userFactory(name, score) {
   user.score = score;
   return user;
 }
-
+/*
+Challenge 1/5
+Create an object adminFunctionStore that has access to all methods 
+in the userFunctionStore object, without copying them over individually.
+ */
 // const adminFunctionStore /* Put code here */ ;
+const adminFunctionStore = Object.create(userFunctionStore);
 
+/*
+Challenge 2/5
+Create an adminFactory function that creates an object with all the
+ same data fields (and default values) as objects of the userFactory class, 
+ but without copying each data field individually.
+ */
+/*
+Challenge 3/5
+Then make sure the value of the 'type' field for adminFactory objects
+ is 'Admin' instead of 'User'.
+ */
+
+ /*
+ Challenge 4/5
+Make sure that adminFactory objects have access to adminFunctionStore methods, 
+without copying them over.
+  */
 function adminFactory(name, score) {
+  let adminDefault = userFactory.call(this, name, score);// call super constructor
   // Put code here
+  let obj = Object.create(adminFunctionStore, {
+    name: {
+      value: name,
+    },
+    score: {
+      value: score
+    }
+  });
+  obj.type = 'Admin';
+  return obj;
 }
 
+/*
+Challenge 5/5
+Created a method called sharePublicMessage that logs 'Welcome users!' 
+and will be available to adminFactory objects, but not userFactory objects. 
+Do not add this method directly in the adminFactory function.
+ */
 /* Put code here for a method called sharePublicMessage*/
+adminFunctionStore.__proto__.sharePublicMessage = () => console.log('Welcome users!');
 
 const adminFromFactory = adminFactory("Eva", 5);
 
@@ -254,8 +308,15 @@ const robotMixin = {
 
 let robotFido = new Dog();
 
+/*
+Mixins are a tool in object-oriented programming that allows objects
+to be given methods and properties beyond those provided by their inheritance.
+For this challenge, complete the missing code, giving all of the robotMixin 
+properties to robotFido. Do this in a single line of code, without adding 
+the properties individually.
+ */
 // robotFido = /* Put code here to give Fido robot skills */;
-
+robotFido.__proto__ = robotMixin
 // /********* Uncomment to test your work! *********/
-// robotFido.speak() // -> Logs "I am made of metal"
+robotFido.speak() // -> Logs "I am made of metal"
 
