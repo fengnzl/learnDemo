@@ -16,6 +16,12 @@ This is the completed challenges from lessons named [js-hard-parts](https://fron
 
 It's the demo for articles from [mqyqingfeng's blog](https://github.com/mqyqingfeng/Blog),all the documents accrossponding the article can be found there.
 
+### deep-js-foundations-v2
+
+This is the completed challenges from lessons named [deep-js-foundations-v2]( https://frontendmasters.com/courses/deep-javascript-v3 )  from frontendmasters.
+
+1. types-exercises are the exercises and solutions about Types one of the three pillars of JavaScript: https://github.com/recoveryMonster/learnDemo/blob/master/js/deep-js-foundations-v2-exercises/types-exercises
+
 ## thirdLibraries
 
 Just for recording some libraries when i first use in the project.
