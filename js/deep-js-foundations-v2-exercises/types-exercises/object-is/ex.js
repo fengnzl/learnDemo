@@ -1,6 +1,5 @@
 // TODO: define polyfill for `Object.is(..)`
 
-
 // tests:
 console.log(Object.is(42,42) === true);
 console.log(Object.is("foo","foo") === true);

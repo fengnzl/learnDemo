@@ -1,5 +1,34 @@
 // TODO: write `findAll(..)`
+function findAll(match, arr) {
+	let ret = [];
+	for (let v of arr) {
+		if (Object.is(match, v)) {
+			ret.push(v);
+		}else if (match == null && v == null) { 
+			ret.push(v)
+		}else if (typeof match == 'string' && match.trim() != '' && typeof v == 'number' && !Object.is(v, -0)) {
+			if (match == v) {
+				ret.push(v);
+			}
+		}else if (typeof match == 'number' && !isNaN(match) && isFinite(match) && !Object.is(match,-0) && typeof v == 'string' && v.trim() != '') {
+			if (match == v) {
+				ret.push(v);
+			}
+		}
+	}
+	return ret
+}
 
+
+function setsMatch(arr1,arr2) {
+	if (Array.isArray(arr1) && Array.isArray(arr2) && arr1.length == arr2.length) {
+		for (let v of arr1) {
+			if (!arr2.includes(v)) return false;
+		}
+		return true;
+	}
+	return false;
+}
 
 
 // tests:

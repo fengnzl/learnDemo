@@ -8,11 +8,10 @@
       "type": "node",
       "request": "launch",
       "name": "csbin debug",
-      "program": "${workspaceFolder}/js/csbin/callback.js",
+      "program": "${workspaceFolder}/js/deep-js-foundations-v2-exercises/types-exercises/equality/ex.js",
       "skipFiles": [
         "<node_internals>/**"
       ]
     }
-    
   ]
 }
