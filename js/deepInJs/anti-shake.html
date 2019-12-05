@@ -23,6 +23,9 @@
   <div id="container"></div>
   <button id="btn">点击取消debounce</button>
   <script>
+    /**
+     * 所谓防抖就是 在触发完事件n秒内不在触发事件，才执行函数
+     */
     var counter = 1;
     var container = document.getElementById('container');
     function getUserAction(e){
