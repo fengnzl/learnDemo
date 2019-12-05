@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>javascript防抖</title>
+</head>
+<style>
+  #container {
+    width: 100%;
+    height: 200px;
+    line-height: 200px;
+    text-align: center;
+    color: #fff;
+    background-color: #444;
+    font-size: 30px;
+  }
+</style>
+
+<body>
+  <div id="container"></div>
+  <button id="btn">点击取消debounce</button>
+  <script>
+    var counter = 1;
+    var container = document.getElementById('container');
+    function getUserAction(e){
+      container.innerHTML = counter++;
+      return counter;
+    }
+    /**
+     * 防抖第一版
+     */
+    function debounce(func, wait){
+      var timeout;
+
+      return function() {
+        clearTimeout(timeout);
+        timeout = setTimeout(func,wait)
+      }
+    }
+    /**
+     * 防抖第二版
+     * 修复this指向
+     */
+    function debounce2(func, wait){
+      var timeout;
+      return function(){
+        let context = this;
+        clearTimeout(timeout);
+        timeout = setTimeout(function(){
+          func.apply(context);
+        }, wait)
+      }
+    }
+    /**
+     * 防抖第三版
+     * 修复event对象
+     */
+    function debounce3(func, wait){
+      var timeout;
+
+      return function(){
+        let context = this;
+        let args = arguments;
+        clearTimeout(timeout);
+        timeout = setTimeout(function(){
+          func.apply(context, args);
+        },wait);
+      }
+    }
+    /**
+     * 防抖第四版
+     * 让其一开始就执行，然后停止触发n秒后(停止移动n秒后)，才重新触发执行
+     */
+    function debounce4(func, wait, immediate){
+      var timeout;
+      return function(){
+        let context = this;
+        let args = arguments;
+
+        if(timeout) clearTimeout(timeout);
+
+        if(immediate){
+          let callNow = !timeout;
+
+          timeout = setTimeout(function(){
+            timeout = null;
+          },wait);
+
+          if(callNow) func.apply(context, args);
+        }else {
+          timeout = setTimeout(function(){
+            func.apply(context, args);
+          }, wait)
+        }
+      }
+    }
+
+    /**
+     * 防抖第5版
+     *函数执行是有返回值的
+     */
+    function debounce5(func, wait, immediate){
+      var timeout, result;
+      
+      return function(){
+        var context = this;
+        var args = arguments;
+        
+        if(timeout) clearTimeout(timeout);
+
+        if(immediate){
+          // 如果已经执行过 则不再执行
+          let callNow = !timeout;
+
+          timeout = setTimeout(function (){
+            timeout = null;
+          }, wait);
+
+          if(callNow) result = func.apply(context, args);
+        }else{
+          timeout = setTimeout(function(){
+            func.apply(context, arguments);
+          }, wait);
+        }
+
+        return result;
+      }
+    }
+
+    /**
+     * 防抖第六版
+     * 可以取消防抖，再次触发 又可立即执行
+     */
+    function debounce6(func, wait, immediate){
+      var timeout, result;
+
+      var debounced = function(){
+        var context = this;
+        var args = arguments;
+
+        if(timeout) clearTimeout(timeout);
+
+        if(immediate){
+          // 如果已经执行过，则不在执行
+          var callNow = !timeout;
+
+          timeout = setTimeout(function(){
+            timeout = null;
+          }, wait);
+
+          if(callNow) result = func.apply(context, args);
+        }else {
+          timeout = setTimeout(function (){
+            func.apply(context, args);
+          }, wait);
+        }
+
+        return result;
+      }
+
+      debounced.cancel = function(){
+        clearTimeout(timeout);
+        timeout = null;
+      }
+
+      return debounced;
+    }
+    // container.onmousemove = getUserAction;
+    var setUserAction = debounce6(getUserAction, 1000, true);
+    container.onmousemove = setUserAction;
+
+    document.getElementById('btn').addEventListener('click',function(){
+      setUserAction.cancel(); 
+    })
+  </script>
+</body>
+</html>
