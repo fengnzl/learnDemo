@@ -1,5 +1,47 @@
 // TODO: write `findAll(..)`
+function findAll(v, arr) {
+	let ret = [];
+	for (let i = 0, len = arr.length; i < len; i++){
+		if (v === null || v === undefined) {
+			if (v === null && (arr[i] === undefined || arr[i]===null)) {
+				ret.push(arr[i]);
+			}
+			if (v === undefined && (arr[i] === undefined || arr[i] === null)) {
+				ret.push(arr[i]);
+			}
+			return
+		}
+		if (Object.is(v, arr[i])) {
+			ret.push(arr[i]);
+		}
+		if (isNaN(v)) {
+			return ret;
+		}
 
+		if (typeof v == 'number' && !isNaN(v) && !isFinite(v)) {
+			if (v === Number(arr[i])) {
+				if (v === 0 && (v / 0 === Number(arr[i]) / 0)) {
+					ret.push(arr[i]);
+				}
+				if (v !== 0) {
+					ret.push(arr[i]);
+				}
+			}
+		}
+
+		ret.concat(stringMatch(v, arr[i]));
+		return ret
+		
+	}
+
+	function stringMatch(x, y) {
+		let ret = [];
+		if (typeof x == 'string' && Number(x) === y && x.trim().length != 0) {
+			ret.push(y);
+		}
+		return ret;
+	}
+}
 
 
 // tests:

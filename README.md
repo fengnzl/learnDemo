@@ -16,11 +16,19 @@ This is the completed challenges from lessons named [js-hard-parts](https://fron
 
 It's the demo for articles from [mqyqingfeng's blog](https://github.com/mqyqingfeng/Blog),all the documents accrossponding the article can be found there.
 
+### articles
+
+These are demos for some technical articles.
+
+1. this is the [code demo](https://github.com/recoveryMonster/learnDemo/blob/master/js/articles/json-parser) for [JSON Parser with JavaScript](https://lihautan.com/json-parser-with-javascript/)
+
 ### deep-js-foundations-v2
 
 This is the completed challenges from lessons named [deep-js-foundations-v2]( https://frontendmasters.com/courses/deep-javascript-v3 )  from frontendmasters.
 
 1. types-exercises are the exercises and solutions about Types one of the three pillars of JavaScript: https://github.com/recoveryMonster/learnDemo/blob/master/js/deep-js-foundations-v2-exercises/types-exercises
+2. scope-exercises are the exercises and solutions about Scopes one of the three pillars of JavaScript:https://github.com/recoveryMonster/learnDemo/blob/master/js/deep-js-foundations-v2-exercises/scope-exercises
+3. objects-exercises are the exercises and solutions about Scopes one of the three pillars of JavaScript:https://github.com/recoveryMonster/learnDemo/blob/master/js/deep-js-foundations-v2-exercises/objects-exercises
 
 ## thirdLibraries
 
