@@ -30,6 +30,10 @@ This is the completed challenges from lessons named [deep-js-foundations-v2]( ht
 2. scope-exercises are the exercises and solutions about Scopes one of the three pillars of JavaScript:https://github.com/recoveryMonster/learnDemo/blob/master/js/deep-js-foundations-v2-exercises/scope-exercises
 3. objects-exercises are the exercises and solutions about Scopes one of the three pillars of JavaScript:https://github.com/recoveryMonster/learnDemo/blob/master/js/deep-js-foundations-v2-exercises/objects-exercises
 
+### the recent parts
+
+This is the completed challenges from lessons named [the recent parts](https://frontendmasters.com/courses/js-recent-parts/) from frontendmasters.
+
 ## thirdLibraries
 
 Just for recording some libraries when i first use in the project.
