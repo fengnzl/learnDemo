@@ -102,19 +102,16 @@ jobs:
 
           REVIEW_CONTENT=$(echo "$RESPONSE" | jq -r '.choices[0].message.content // "审查失败: API返回错误"')
 
-          # 转义为GitHub Actions输出格式
-          REVIEW_CONTENT_ESCAPED=$(echo "$REVIEW_CONTENT" | sed 's/\\/\\\\/g' | sed 's/"/\\"/g' | sed ':a;N;$!ba;s/\n/\\n/g')
-
-          echo "response<<EOF" >> $GITHUB_OUTPUT
-          echo "$REVIEW_CONTENT_ESCAPED" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          # 将结果保存到文件，通过环境变量传递
+          echo "$REVIEW_CONTENT" > /tmp/review_result.txt
 
       - name: Comment on PR
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const reviewOutput = steps.review.outputs.response;
+            const fs = require('fs');
+            const reviewOutput = fs.readFileSync('/tmp/review_result.txt', 'utf8');
 
             // 添加评论头部
             const commentBody = `### 🤖 智谱 AI 代码审查\n\n${reviewOutput}\n\n---\n*此评论由 [Zhipu PR Review](.github/workflows/claude_pr_review.yml) 自动生成*`;
