@@ -1,0 +1,140 @@
+name: Zhipu PR Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [master, main]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  zhipu-review:
+    name: Zhipu AI Code Review
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout PR branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v45
+        with:
+          separator: ' '
+
+      - name: Get PR diff
+        id: diff
+        run: |
+          DIFF=$(git diff origin/${{ github.base_ref }}...HEAD --diff-filter=M -- '*.ts' '*.tsx' '*.js' '*.jsx' '*.py' '*.go' '*.java' '*.rs' '*.rb' '*.php' '*.cs' '*.cpp' '*.c' '*.h' '*.vue' '*.scss' '*.css' || echo "")
+          echo "diff<<EOF" >> $GITHUB_OUTPUT
+          echo "$DIFF" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Prepare review prompt
+        id: prompt
+        run: |
+          cat > /tmp/review_prompt.txt << 'EOF'
+          请审查以下 Pull Request 的代码变更，重点关注：
+          1. 代码质量与最佳实践
+          2. 潜在的 Bug 或逻辑错误
+          3. 安全问题（如 SQL 注入、XSS、权限检查等）
+          4. 性能问题
+          5. 代码可读性和可维护性
+          6. 是否有遗漏的错误处理
+
+          请提供具体的改进建议，格式如下：
+          ## 🔍 PR 审查报告
+
+          ### 📊 整体评价
+          [简要总结代码质量，1-2句话]
+
+          ### 🚨 严重问题（必须修复）
+          - [如有严重问题列出]
+
+          ### ⚠️ 建议改进（应该修复）
+          - [如有建议列出]
+
+          ### 💡 优化提示（可选）
+          - [如有优化建议列出]
+
+          ### ✅ 优点
+          - [列出代码中的亮点]
+
+          ---
+          PR 标题: ${{ github.event.pull_request.title }}
+          PR 描述: ${{ github.event.pull_request.body || '(无描述)' }}
+          变更文件: ${{ steps.changed-files.outputs.all_changed_files }}
+          PR 作者: @${{ github.event.pull_request.user.login }}
+
+          代码差异:
+          EOF
+          cat /tmp/review_prompt.txt >> $GITHUB_OUTPUT_PATH
+          echo "${{ steps.diff.outputs.diff }}" >> $GITHUB_OUTPUT_PATH
+        env:
+          GITHUB_OUTPUT_PATH: /tmp/full_prompt.txt
+
+      - name: Review with Zhipu AI
+        id: review
+        run: |
+          PROMPT=$(cat /tmp/full_prompt.txt)
+
+          RESPONSE=$(curl -s https://open.bigmodel.cn/api/paas/v4/chat/completions \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer ${{ secrets.ZHIPU_API_KEY }}" \
+            -d '{
+              "model": "glm-4-plus",
+              "messages": [
+                {
+                  "role": "user",
+                  "content": '"$(echo "$PROMPT" | jq -Rs .)"'
+                }
+              ],
+              "temperature": 0.3,
+              "max_tokens": 4096,
+              "top_p": 0.9
+            }')
+
+          echo "Response: $RESPONSE" >&2
+
+          REVIEW_CONTENT=$(echo "$RESPONSE" | jq -r '.choices[0].message.content // "审查失败: API返回错误"')
+
+          # 转义为GitHub Actions输出格式
+          REVIEW_CONTENT_ESCAPED=$(echo "$REVIEW_CONTENT" | sed 's/\\/\\\\/g' | sed 's/"/\\"/g' | sed ':a;N;$!ba;s/\n/\\n/g')
+
+          echo "response<<EOF" >> $GITHUB_OUTPUT
+          echo "$REVIEW_CONTENT_ESCAPED" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Comment on PR
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const reviewOutput = `${{ steps.review.outputs.response }`;
+
+            // 添加评论头部
+            const commentBody = `### 🤖 智谱 AI 代码审查\n\n${reviewOutput}\n\n---\n*此评论由 [Zhipu PR Review](.github/workflows/claude_pr_review.yml) 自动生成*`;
+
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: commentBody
+            });
+
+      - name: Handle failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '### ⚠️ 代码审查失败\n\n审查工作流执行失败，请检查工作流日志。'
+            });
