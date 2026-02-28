@@ -114,7 +114,7 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const reviewOutput = `${{ steps.review.outputs.response }`;
+            const reviewOutput = steps.review.outputs.response;
 
             // 添加评论头部
             const commentBody = `### 🤖 智谱 AI 代码审查\n\n${reviewOutput}\n\n---\n*此评论由 [Zhipu PR Review](.github/workflows/claude_pr_review.yml) 自动生成*`;
